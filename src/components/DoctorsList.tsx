@@ -11,7 +11,7 @@ const DoctorsList: FC<Props> = ({ item }) => {
 
   return (
     <div
-      onClick={() => navigate(`/appointment/${item.__id}`)} // Fixed `__id` to `_id`
+      onClick={() => navigate(`/appointment/${item.__id}`)} 
       className="cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
     >
       <img

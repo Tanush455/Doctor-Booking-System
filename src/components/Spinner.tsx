@@ -1,4 +1,3 @@
-
 export default function Spinner() {
     return (
         <div className='flex space-x-2 justify-center items-center bg-white h-screen dark:invert'>
