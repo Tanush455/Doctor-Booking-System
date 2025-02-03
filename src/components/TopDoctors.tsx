@@ -34,14 +34,14 @@ export default function TopDoctors() {
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Subtle gradient overlays */}
-        <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-white/30 to-transparent backdrop-blur-[1px] pointer-events-none z-20" />
-        <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-white/30 to-transparent backdrop-blur-[1px] pointer-events-none z-20" />
+        <div className="absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-white/30 to-transparent backdrop-blur-[1px] pointer-events-none z- rounded-2xl" />
+        <div className="absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-white/30 to-transparent backdrop-blur-[1px] pointer-events-none z-20 rounded-2xl" />
 
         <Marquee 
           speed={isHovered ? 30 : 50}
           gradient={false}
           pauseOnHover={false}
-          className="transition-[speed] duration-300" // Smooth speed transition
+          className="transition-[speed] duration-300 " // Smooth speed transition
         >
           {marqueeItems}
         </Marquee>

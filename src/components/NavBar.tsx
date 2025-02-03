@@ -1,77 +1,169 @@
-import { NavLink, useNavigate } from 'react-router-dom'
-import logo from '../assets/logo.svg'
-import profilepic from '../assets/profile_pic.png'
-import dropDownIcon from '../assets/dropdown_icon.svg'
-import { useState } from 'react'
-import { assets } from '../assets/Information'
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { assets } from '../assets/Information';
+import Cross from '../assets/cross_icon.png'
 
 function NavBar() {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const [token, setToken] = useState(true);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [token, setToken] = useState(true); // Replace with real auth logic
+
+  // Common navigation links
+  const navLinks = [
+    { path: '/', text: 'HOME' },
+    { path: '/doctors', text: 'ALL DOCTORS' },
+    { path: '/about', text: 'ABOUT' },
+    { path: '/contact', text: 'CONTACT' },
+  ];
 
   return (
-    <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-700 '>
-      <img src={assets.website_logo} alt="Logo" className='w-44 cursor-pointer pl-1.5' onClick={() => navigate('/')}/>
+    <div className='relative flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-700 px-4'>
+      <img 
+        src={assets.website_logo} 
+        alt="Website Logo" 
+        className='w-32 cursor-pointer' 
+        onClick={() => navigate('/')}
+      />
 
-      <ul className='hidden md:flex items-start gap-5 font-medium'>
-        <li className='py-1'>
-          <NavLink to='/'>
-            HOME
-          </NavLink>
-          <hr className='border-none outline-none h-0.5 bg-black w-3/5 m-auto hidden' />
-        </li>
-        <li className='py-1'>
-          <NavLink to='/doctors'>
-            ALL DOCTORS
-          </NavLink>
-          <hr className='border-none outline-none h-0.5 bg-black w-3/5 m-auto hidden' />
-        </li>
-        <li className='py-1'>
-          <NavLink to='/about'>
-            ABOUT
-          </NavLink>
-          <hr className='border-none outline-none h-0.5 bg-black w-3/5 m-auto hidden' />
-        </li>
-        <li className='py-1'>
-          <NavLink to='/contact'>
-            CONTACT
-          </NavLink>
-          <hr className='border-none outline-none h-0.5 bg-black w-3/5 m-auto hidden' />
-        </li>
-      </ul>
+      {/* Mobile Menu Toggle */}
+      <button 
+        className='md:hidden p-2'
+        onClick={() => setShowMobileMenu(!showMobileMenu)}
+        aria-label="Toggle navigation menu"
+      >
+        <img 
+          src={showMobileMenu ? Cross : assets.menu_icon} 
+          alt='Menu toggle' 
+          className='w-6'
+        />
+      </button>
 
-      <div>
-        {
-          token ? (
-            <div className='flex items-center gap-2 cursor-pointer pl-1.5 group relative'>
-              <img src={profilepic} alt="Profile" className='w-8 rounded-full' />
-              <img src={dropDownIcon} alt="Dropdown" className='w-2.5' onClick={() => setShowMenu(!showMenu)} />
-              {showMenu && (
-                <div className='absolute top-10 right-0 rounded-lg p-4 font-medium text-base'>
-                  <div className='min-w-48 bg-stone-100 rounded flex flex-col gap-4'>
-                    <p onClick={()=>navigate('my-profile')} className='cursor-pointer pl-2'>My profile</p>
-                    <p onClick={()=>navigate('my-appointments')}className='cursor-pointer pl-2'>My appointments</p>
-                    <p onClick={()=>navigate(`dashboard/:x`)}className='cursor-pointer pl-2'>DashBoard</p>
-                    <p className='cursor-pointer pl-2' onClick={() => setToken(false)}>Logout</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <ul className='flex items-center gap-5 flex-wrap sm:flex-nowrap'>
-              <NavLink to='/login' className='w-[80px] h-[30px] bg-blue-300 rounded-2xl text-center pt-1 hover:bg-blue-400 hover:scale-100 transition-all duration-1000 shadow-lg shadow-cyan-500/50'>
-                <button>LOGIN</button>
+      {/* Desktop Navigation */}
+      <nav className='hidden md:flex items-center gap-8'>
+        <ul className='flex items-center gap-6 font-medium'>
+          {navLinks.map((link) => (
+            <li key={link.path}>
+              <NavLink 
+                to={link.path} 
+                className={({ isActive }) => 
+                  `hover:text-blue-500 ${isActive ? 'text-blue-600' : 'text-gray-700'}`
+                }
+              >
+                {link.text}
               </NavLink>
-              <NavLink to='/signin' className='w-[80px] h-[30px] bg-blue-300 rounded-2xl text-center pt-1 hover:bg-blue-400 transition-all duration-1000 shadow-lg shadow-cyan-500/50'>
-                <button>SIGNIN</button>
-              </NavLink>
-            </ul>
-          )
-        }
-      </div>
+            </li>
+          ))}
+        </ul>
+
+        {/* Auth Section */}
+        {token ? (
+          <div className='relative flex items-center gap-2'>
+            <button 
+              className='flex items-center gap-2'
+              onClick={() => setShowMenu(!showMenu)}
+              aria-haspopup="true"
+              aria-expanded={showMenu}
+            >
+              <img 
+                src={assets.profile_pic} 
+                alt="User profile" 
+                className='w-8 h-8 rounded-full object-cover'
+              />
+              <img 
+                src={assets.dropdown_icon} 
+                alt="Profile options" 
+                className='w-3 transition-transform'
+                style={{ transform: showMenu ? 'rotate(180deg)' : 'none' }}
+              />
+            </button>
+            
+            {showMenu && (
+              <div className='absolute top-full right-0 bg-white shadow-lg rounded-lg p-4 font-medium text-base flex flex-col gap-3 min-w-48 z-50'>
+                <NavLink to='/my-profile' className="hover:text-blue-500">My Profile</NavLink>
+                <NavLink to='/my-appointments' className="hover:text-blue-500">My Appointments</NavLink>
+                <NavLink to='/dashboard' className="hover:text-blue-500">Dashboard</NavLink>
+                <button 
+                  onClick={() => setToken(false)}
+                  className='text-left hover:text-blue-500'
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className='flex items-center gap-4'>
+            <NavLink 
+              to='/login' 
+              className='bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition-colors'
+            >
+              LOGIN
+            </NavLink>
+            <NavLink 
+              to='/signup' 
+              className='bg-gray-200 text-gray-700 rounded-lg px-4 py-2 hover:bg-gray-300 transition-colors'
+            >
+              SIGN UP
+            </NavLink>
+          </div>
+        )}
+      </nav>
+
+      {/* Mobile Navigation */}
+      {showMobileMenu && (
+        <div className='md:hidden absolute top-full left-0 w-full bg-white shadow-lg z-50'>
+          <ul className='flex flex-col items-center gap-4 py-5'>
+            {navLinks.map((link) => (
+              <li key={link.path}>
+                <NavLink 
+                  to={link.path} 
+                  onClick={() => setShowMobileMenu(false)}
+                  className={({ isActive }) => 
+                    `hover:text-blue-500 ${isActive ? 'text-blue-600' : 'text-gray-700'}`
+                  }
+                >
+                  {link.text}
+                </NavLink>
+              </li>
+            ))}
+            
+            {/* Mobile Auth Section */}
+            {token ? (
+              <>
+                <NavLink to='/my-profile' onClick={() => setShowMobileMenu(false)}>My Profile</NavLink>
+                <NavLink to='/my-appointments' onClick={() => setShowMobileMenu(false)}>My Appointments</NavLink>
+                <NavLink to='/dashboard' onClick={() => setShowMobileMenu(false)}>Dashboard</NavLink>
+                <button 
+                  onClick={() => setToken(false)}
+                  className='text-red-600 hover:text-red-700'
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <div className='flex flex-col gap-4 mt-4 w-full px-4'>
+                <NavLink 
+                  to='/login' 
+                  onClick={() => setShowMobileMenu(false)}
+                  className='bg-blue-500 text-white rounded-lg px-4 py-2 text-center hover:bg-blue-600'
+                >
+                  LOGIN
+                </NavLink>
+                <NavLink 
+                  to='/signup' 
+                  onClick={() => setShowMobileMenu(false)}
+                  className='bg-gray-200 text-gray-700 rounded-lg px-4 py-2 text-center hover:bg-gray-300'
+                >
+                  SIGN UP
+                </NavLink>
+              </div>
+            )}
+          </ul>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
 export default NavBar;
